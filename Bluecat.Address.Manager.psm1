@@ -50,7 +50,7 @@ function Get-BamDnsZone {
     $ZoneName,
     $bam = $defaultBam
   )
-  $cfg = get-BamConfiguration $ConfigurationName
+  $cfg = get-BamConfiguration $ConfigurationName $bam
   $bam.getZonesByHint($cfg.id, 0, 10, "hint=$ZoneName")
 }
 
@@ -69,13 +69,13 @@ function Get-BamServer {
     $ConfigurationName,
     $bam = $defaultBam
   )
-  $cfg = get-BamConfiguration $ConfigurationName
+  $cfg = get-BamConfiguration $ConfigurationName $bam
   $bam.getentities($cfg.id, "Server", 0, [int32]::MaxValue)
 }
 
 function Get-BamDnsRecord {
   param(
-    $Zone,
+    $ZoneId,
     [ValidateSet(
       "HostRecord",
       "AliasRecord",
@@ -89,27 +89,69 @@ function Get-BamDnsRecord {
     $type,
     $bam = $defaultBam
   )
-  $bam.getEntities($zone.id, $type, 0, [int32]::MaxValue)
+  $bam.getEntities($zoneId, $type, 0, [int32]::MaxValue)
 }
 
 function Add-BamDnsHostRecord {
   param(
-    $view,
+    $viewId,
     $fqdn,
     $ip,
     $ttl,
     $bam = $defaultBam
   )
-  $bam.addHostRecord($view.id, $fqdn, $ip, $ttl, "reverseRecord=true")
+  $bam.addHostRecord($viewId, $fqdn, $ip, $ttl, "reverseRecord=true")
 }
 
 function Add-BamDnsAliasRecord {
   param(
-    $view,
+    $viewId,
     $fqdn,
     $targetFqdn,
     $ttl,
     $bam = $defaultBam
   )
-  $bam.addAliasRecord($view.id, $fqdn, $targetFqdn, $ttl, "")
+  $bam.addAliasRecord($viewId, $fqdn, $targetFqdn, $ttl, "")
+}
+
+Function Get-BamIPv4Block {
+  param(
+    [parameter(
+      mandatory = $true,
+      ValueFromPipelineByPropertyName,
+      helpmessage = 'Container ID or container object'
+    )]
+    $id,
+    [switch]
+    $recurse = $false,
+    $bam = $defaultBam
+  )
+  begin {}
+  process {
+    $subBlock = $bam.getEntities($id, 'IP4Block', 0, [int32]::MaxValue)
+    $subBlock
+    if ($recurse) { $subBlock | Get-BamIPv4Block -recurse -bam $bam }
+  }
+  end {}
+}
+
+Function Get-BamIPv4Network {
+  param(
+    [parameter(
+      mandatory = $true,
+      ValueFromPipelineByPropertyName,
+      helpmessage = 'Container ID or container object'
+    )]
+    $id,
+    $bam = $defaultBam
+  )
+  begin {}
+  process {
+    try {
+      $bam.getEntities($id, 'IP4Network', 0, [int32]::MaxValue)
+    } catch {
+      write-verbose "Failed to get network in block $id"
+    }
+  }
+  end {}
 }
