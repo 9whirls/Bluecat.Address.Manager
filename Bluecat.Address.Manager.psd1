@@ -12,7 +12,7 @@
 RootModule = 'Bluecat.Address.Manager.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.2'
+ModuleVersion = '1.5.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -69,9 +69,9 @@ Description = 'Powershell module for Bluecat Address Manager'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Convert-BamProperty', 'Connect-Bam', 'Get-BamConfiguration', 
-               'Get-BamDnsZone', 'Get-BamDnsView', 'Get-BamServer', 'Get-BamDnsRecord', 
-               'Add-BamDnsHostRecord', 'Add-BamDnsAliasRecord'
+FunctionsToExport = 'Convert-BamProperty', 'Connect-Bam', 'Get-BamConfiguration', 'Get-BamDevice', 'Get-BamMac',
+               'Get-BamDnsZone', 'Get-BamDnsView', 'Get-BamServer', 'Get-BamDnsRecord', 'Get-BamIPv4Block', 'Get-BamIPv4Network', 
+               'Add-BamDnsHostRecord', 'Add-BamDnsAliasRecord', 'Add-BamDnsSrvRecord', 'Add-BamDnsGenericRecord', 'Add-BamDnsExternalRecord'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -125,4 +125,3 @@ PrivateData = @{
 # DefaultCommandPrefix = ''
 
 }
-
